@@ -1,0 +1,20 @@
+{
+        "files.exclude": {
+                "**/.git": true,
+                "**/.svn": true,
+                "**/.hg": true,
+                "**/CVS": true,
+                "**/.DS_Store": true,
+                "*.cmd": true,
+                "*.symvers": true,
+                "*.mod*": true,
+                "*.order": true,
+                "*.o": true
+        },
+        "files.associations": {
+                "*.arxml": "xml",
+                "of.h": "c",
+                "platform_device.h": "c",
+                "fpga-mgr.h": "c"
+        }
+}
