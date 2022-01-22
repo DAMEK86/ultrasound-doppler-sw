@@ -4,7 +4,6 @@
 #include <linux/init.h>
 #include <linux/fpga/fpga-mgr.h>
 
-
 static int __init fpga_loader_init(void)
 {
         /* device node that specifies the FPGA manager to use */
@@ -28,7 +27,7 @@ static int __init fpga_loader_init(void)
 
         image_info = fpga_image_info_alloc(&mgr->dev);
         /* FPGA image is in this file which is in the firmware search path */
-        image_info->firmware_name = "counter-reverse.bin";
+        image_info->firmware_name = devm_kstrdup(&mgr->dev, "ice40.bin", GFP_KERNEL);
         /* flags indicates whether to do full or partial reconfiguration */
         image_info->flags = 0;
 
@@ -39,11 +38,11 @@ static int __init fpga_loader_init(void)
                 goto out_free_image_info;
         }
 
-        /* Release the FPGA manager */
-        fpga_mgr_put(mgr);
-
 out_free_image_info:
         fpga_image_info_free(image_info);
+
+        /* Release the FPGA manager */
+        fpga_mgr_put(mgr);
 
         return ret;
 }
