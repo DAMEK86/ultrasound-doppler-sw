@@ -11,7 +11,7 @@ all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
 
 clean:
-	rm -rf *.o *.ko *.mod.c *~ .*.cmd *.o.cmd .*.o.cmd \
+	rm -rf *.o *.ko *.mod.c *.mod *~ .*.cmd *.o.cmd .*.o.cmd \
 	Module.symvers modules.order .tmp_versions modules.builtin
 
 modules_install:
