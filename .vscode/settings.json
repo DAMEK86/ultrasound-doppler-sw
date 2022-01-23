@@ -15,6 +15,9 @@
                 "*.arxml": "xml",
                 "of.h": "c",
                 "platform_device.h": "c",
-                "fpga-mgr.h": "c"
+                "fpga-mgr.h": "c",
+                "regmap.h": "c",
+                "i2c.h": "c",
+                "kernel.h": "c"
         }
 }
