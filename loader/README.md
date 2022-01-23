@@ -1,8 +1,19 @@
 # LKM
 
+```bash
+# build dts and copy it to /boot/overlays
+dtc -@ -I dts -O dtb -o ice40-overlay.dtbo ice40-overlay.dts
+
+# load regmap-i2c if compiled as module
+modprobe regmap-i2c
+insmod fpga-loader.ko
+```
+
 ## Raspberry PI Kernel stuff
 
 see https://www.raspberrypi.com/documentation/computers/linux_kernel.html#kernel-headers
+
+enable __fpga manager__ and __ice40 loader__
 
 ```bash
 cd linux
