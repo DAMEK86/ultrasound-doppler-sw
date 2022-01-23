@@ -78,6 +78,7 @@
 
                         clocks = <&usd2022_xtal>;
                         firmware-name = "ice40.bin";
+                        fpga-mgr-name = "ice40";
                 };
         };
     };

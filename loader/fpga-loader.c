@@ -8,6 +8,7 @@
 #include <linux/regmap.h>
 
 #define DRIVER_NAME "usd2022"
+#define FALLBACK_FPGA_MANAGER_NODE_NAME "ice40"
 
 struct usd2022 {
         struct i2c_client *client;	/* I2C client */
@@ -20,6 +21,7 @@ struct usd2022 {
 
         /* Driver private variables */
         const char* fw_name;
+        const char* fpga_mgr_name;
 };
 
 /* Register map to define preset values */
@@ -59,6 +61,8 @@ static void usd2022_preload(struct usd2022 *ctx)
 
         for (i = 0; i < ARRAY_SIZE(usd2022_default_map); i++)
 		usd2022_write(ctx, usd2022_default_map[i].idx, usd2022_default_map[i].val);
+        
+        dev_dbg(&ctx->client->dev, "register preloaded.\n");
 };
 
 static int load_firmware(struct usd2022 *ctx)
@@ -105,6 +109,7 @@ out_free_image_info:
 static int usd2022_probe(struct i2c_client *client)
 {
         const char* firmware_name;
+        const char* fpga_mgr_name;
 
 	struct clk *clk;
         struct usd2022 *ctx;
@@ -112,8 +117,14 @@ static int usd2022_probe(struct i2c_client *client)
 
         if (of_property_read_string(client->dev.of_node, "firmware-name",
 				     &firmware_name)) {
-                dev_err(&client->dev, "failed to get firmware name\n");
+                dev_err(&client->dev, "node firmware-name not found.\n");
 		return -EINVAL;
+        }
+
+        if (of_property_read_string(client->dev.of_node, "fpga-mgr-name",
+				     &fpga_mgr_name)) {
+                dev_warn(&client->dev, "node fpga-mgr-name not found, using fallback %s\n", FALLBACK_FPGA_MANAGER_NODE_NAME);
+                fpga_mgr_name = kstrdup(FALLBACK_FPGA_MANAGER_NODE_NAME, GFP_KERNEL);
         }
 
         clk = devm_clk_get(&client->dev, NULL);
@@ -129,6 +140,7 @@ static int usd2022_probe(struct i2c_client *client)
 		return -ENOMEM;
 
         ctx->fw_name = firmware_name;
+        ctx->fpga_mgr_name = fpga_mgr_name;
         ctx->xtal_freq = clk_get_rate(clk);
         dev_info(&client->dev, "xtal freq: %luHz\n", ctx->xtal_freq);
         
