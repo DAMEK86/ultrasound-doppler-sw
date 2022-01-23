@@ -1,0 +1,85 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible="brcm,bcm2708";
+
+  fragment@0 {
+    target = <&spi0>;
+    __overlay__ {
+      status = "okay";
+
+      spidev@0 {
+        status = "disabled";
+      };
+
+      spidev@1 {
+        status = "disabled";
+      };
+    };
+  };
+
+  fragment@1 {
+    target = <&spi0>;
+
+    __overlay__ {
+      /* needed to avoid dtc warning */
+      #address-cells = <1>;
+      #size-cells = <0>;
+
+      ice40: ice40@0 {
+        compatible = "lattice,ice40-fpga-mgr";
+	reg = <0>;
+        spi-max-frequency = <10000000>;
+        cdone-gpios = <&gpio 24 0>;
+	reset-gpios = <&gpio 22 1>;
+      };
+
+      machxo2: machxo2@1 {
+	compatible = "machxo2-slave-spi";
+	reg = <1>;
+	spi-max-frequency = <5000000>;
+      };
+    };
+  };
+
+  fragment@2 {
+    target = <&i2c1>;
+    __overlay__ {
+        status = "okay";
+    };
+  };
+
+  fragment@3 {
+        target-path = "/";
+
+        __overlay__ {
+                  /* Fixed XTAL clock node */
+                usd2022_xtal: clock {
+                        compatible = "fixed-clock";
+                        #clock-cells = <0>;
+                        clock-frequency = <12000000>;
+                };
+        };
+  };
+
+  fragment@4 {
+    target = <&i2c1>;
+
+        __overlay__ {
+        /* needed to avoid dtc warning */
+        #address-cells = <1>;
+        #size-cells = <0>;
+                usd2022: usd2022@55 {
+                        compatible = "ice40,usd2022";
+                        reg = <0x55>;
+                        #address-cells = <1>;
+                        #size-cells = <1>;
+
+                        clocks = <&usd2022_xtal>;
+                        firmware-name = "ice40.bin";
+                };
+        };
+    };
+
+};
