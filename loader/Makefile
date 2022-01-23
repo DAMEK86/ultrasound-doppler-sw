@@ -1,7 +1,7 @@
 MODULENAME 	:= fpga-loader
 obj-m 	   	:= $(MODULENAME).o
 
-KDIR		:= /home/andrehn/fpga/linux
+KDIR		:= $(shell pwd)/../../linux
 PWD 	   	:= $(shell pwd)
 
 KERNEL		:=kernel7l
@@ -18,4 +18,4 @@ modules_install:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
 
 copy:
-	scp $(MODULENAME).ko pi4:
+	scp $(MODULENAME).ko pi@192.168.178.35:
